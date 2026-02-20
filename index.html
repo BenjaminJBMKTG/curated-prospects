@@ -3,31 +3,514 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FitPipeline - Client Acquisition Infrastructure for Online Fitness Coaches</title>
-  <meta name="description" content="FitPipeline installs predictable client acquisition infrastructure for online fitness coaches. We build the system behind consistent consult volume." />
-  <link rel="stylesheet" href="./styles.css" />
+  <title>FitPipeline — Client Acquisition Infrastructure for Fitness Coaches</title>
+  <meta name="description" content="FitPipeline builds predictable client acquisition systems for online fitness coaches. Content, DM automation, and paid ads - all wired together." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Kulim+Park:wght@300;400;600;700&family=Unbounded:wght@600;700;800;900&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="./favicon.png">
+
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --blue: #2563EB;
+      --blue-light: #60A5FA;
+      --blue-dark: #1E40AF;
+      --blue-bg: #EFF6FF;
+      --bg: #FFFFFF;
+      --bg2: #F8FAFC;
+      --bg-alt: #F1F5F9;
+      --text: #0F172A;
+      --text-secondary: #475569;
+      --muted: #94A3B8;
+      --border: #E2E8F0;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 80px 0; }
+    .section--alt { background: var(--bg-alt); }
+    .section__head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+    .section__head h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .section__lead { color: var(--text-secondary); font-size: 1.1rem; }
+
+    /* Topbar */
+    .topbar {
+      background: var(--blue);
+      color: white;
+      font-size: 0.875rem;
+      padding: 10px 0;
+    }
+    .topbar__inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .topbar__left { display: flex; align-items: center; gap: 10px; }
+    .topbar__badge {
+      background: rgba(255,255,255,0.2);
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .topbar__link { color: white; text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .topbar__link:hover { text-decoration: underline; }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .nav__inner { display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand__mark {
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+    }
+    .brand__text {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text);
+    }
+    .nav__links { display: flex; align-items: center; gap: 28px; }
+    .nav__links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav__links a:hover { color: var(--blue); }
+    .nav__toggle { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
+    .nav__toggle span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.2s; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn--primary {
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+    }
+    .btn--primary:hover { background: var(--blue-dark); box-shadow: 0 4px 16px rgba(37,99,235,0.35); }
+    .btn--ghost {
+      background: transparent;
+      color: var(--blue);
+      border: 2px solid var(--blue);
+    }
+    .btn--ghost:hover { background: var(--blue-bg); }
+    .btn--small { padding: 10px 20px; font-size: 0.9rem; }
+    .btn--full { width: 100%; }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      background: linear-gradient(180deg, var(--blue-bg) 0%, var(--bg) 100%);
+    }
+    .hero__copy { max-width: 720px; margin: 0 auto; text-align: center; }
+    .hero__copy h1 {
+      font-family: var(--font-heading);
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .grad {
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .lead {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+    .hero__actions { display: flex; gap: 14px; justify-content: center; margin-bottom: 28px; }
+    .trustline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .stars { color: #F59E0B; font-size: 1rem; letter-spacing: 2px; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+    .stat__num {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .stat__label { font-size: 0.875rem; color: var(--text-secondary); margin-top: 4px; }
+
+    /* Grid */
+    .grid { display: grid; gap: 20px; }
+    .grid--2 { grid-template-columns: repeat(2, 1fr); }
+    .grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+    /* Cards */
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+    .card--soft { background: var(--bg2); border-color: var(--border); }
+    .card--glow {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px var(--blue), 0 4px 24px rgba(37,99,235,0.1);
+    }
+    .card__title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .card p { color: var(--text-secondary); font-size: 1.05rem; }
+    .pill {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 14px;
+      border-radius: 99px;
+      background: var(--bg-alt);
+      color: var(--text-secondary);
+    }
+    .pill--alt { background: var(--blue); color: white; }
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+    /* Bullets */
+    .bullets { display: flex; flex-direction: column; gap: 10px; }
+    .bullet {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      flex-shrink: 0;
+    }
+    .dot--alt { background: var(--blue); }
+
+    /* Video */
+    .video-section { padding: 60px 0; text-align: center; }
+    .video-heading {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .video-subheading { color: var(--text-secondary); margin-bottom: 32px; }
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--bg-alt);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Proof / CTA card */
+    .proof__card {
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      text-align: center;
+      color: white;
+    }
+    .proof__kicker {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .proof__line { font-size: 1.1rem; opacity: 0.9; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .proof__card .btn--primary {
+      background: white;
+      color: var(--blue);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    .proof__card .btn--primary:hover { background: #F0F4FF; }
+
+    /* FAQ */
+    .faq { max-width: 680px; margin: 0 auto; }
+    .faq__q {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+    }
+    .faq__q:hover { color: var(--blue); }
+    .chev {
+      width: 20px;
+      height: 20px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .chev::before, .chev::after {
+      content: '';
+      position: absolute;
+      background: currentColor;
+      border-radius: 2px;
+      transition: transform 0.3s;
+    }
+    .chev::before { width: 12px; height: 2px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .chev::after { width: 2px; height: 12px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .faq__q[aria-expanded="true"] .chev::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+    .faq__a {
+      max-height: 0;
+      overflow: hidden;
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .faq__q[aria-expanded="true"] + .faq__a { max-height: 300px; padding-bottom: 18px; }
+
+    /* CTA Row */
+    .ctaRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: var(--blue-bg);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-top: 48px;
+    }
+    .ctaRow__title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+    .ctaRow__sub { color: var(--text-secondary); font-size: 0.95rem; }
+
+    /* Team */
+    .team-card {
+      text-align: center;
+      padding: 32px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--blue-bg);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .team-card h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .team-card p { color: var(--text-secondary); font-size: 1.05rem; }
+
+    /* Footer */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .footer__inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer__meta { margin-top: 12px; font-size: 0.85rem; color: var(--muted); }
+    .footer__right { display: flex; gap: 20px; }
+    .footer__link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .footer__link:hover { color: var(--blue); }
+
+    /* Bottom CTA (mobile) */
+    .bottomCta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+    }
+    .bottomCta__pill { display: flex; align-items: center; justify-content: space-between; }
+    .bottomCta__title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal[aria-hidden="false"] { display: flex; }
+    .modal__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+    }
+    .modal__panel {
+      position: relative;
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow: auto;
+    }
+    .modal__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 24px 24px 0;
+    }
+    .modal__kicker { font-size: 0.8rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; }
+    .modal__title { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; margin-top: 4px; }
+    .modal__close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 4px;
+    }
+    .modal__close:hover { color: var(--text); }
+    .modal__body { padding: 16px 24px 24px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero__copy h1 { font-size: 2.2rem; }
+      .grid--2, .grid--3 { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .nav__links { display: none; }
+      .nav__toggle { display: flex; }
+      .nav__links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      }
+      .bottomCta { display: block; }
+      .ctaRow { flex-direction: column; text-align: center; }
+      .section { padding: 60px 0; }
+      .section__head h2 { font-size: 1.8rem; }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Top Notice / Sticky CTA -->
+  <!-- Top Notice -->
   <div class="topbar">
     <div class="container topbar__inner">
       <div class="topbar__left">
         <span class="topbar__badge">New</span>
-        <span class="topbar__text">Client acquisition infrastructure for online fitness coaches</span>
+        <span>Client acquisition infrastructure for fitness coaches</span>
       </div>
-
       <div class="topbar__right">
-        <a href="#cta" class="topbar__link">Book a strategy call →</a>
+        <a href="#cta" class="topbar__link">Get a free audit &#8594;</a>
       </div>
     </div>
   </div>
@@ -36,7 +519,7 @@
   <header class="nav" id="nav">
     <div class="container nav__inner">
       <a href="#top" class="brand">
-        <span class="brand__mark" aria-hidden="true" >
+        <span class="brand__mark" aria-hidden="true">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         </span>
         <span class="brand__text">FitPipeline</span>
@@ -47,7 +530,7 @@
       </button>
 
       <nav class="nav__links" id="navLinks">
-        <a href="#offer">Who it's for</a>
+        <a href="#offer">What we do</a>
         <a href="#how">How it works</a>
         <a href="#pricing">Pricing</a>
         <a href="#faqs">FAQs</a>
@@ -59,216 +542,200 @@
   <!-- Hero -->
   <main id="top">
     <section class="hero">
-      <div class="container hero__grid">
+      <div class="container">
         <div class="hero__copy">
-          <h1>Install predictable <span class="grad">client acquisition infrastructure</span> for your fitness business.</h1>
+          <h1>The system behind coaches who <span class="grad">never run out of clients</span>.</h1>
           <p class="lead">
-            We build the system behind consistent consult flow for online fitness coaches.
-            <strong>Content → Conversation → Conversion</strong>.
+            We build predictable client acquisition infrastructure for online fitness coaches.
+            Content, DM automation, and paid ads - all wired together.
           </p>
 
-          <div class="stats">
-            <div class="stat">
-              <div class="stat__num">Predictable</div>
-              <div class="stat__label">Consult volume, every week</div>
-            </div>
-            <div class="stat">
-              <div class="stat__num">Systematic</div>
-              <div class="stat__label">5 pillar infrastructure</div>
-            </div>
-            <div class="stat">
-              <div class="stat__num">Consistent</div>
-              <div class="stat__label">70-85% show rate target</div>
-            </div>
-          </div>
-
           <div class="hero__actions">
-            <a class="btn btn--primary" href="#cta">Book a Strategy Call</a>
+            <a class="btn btn--primary" href="#cta">Book a Call</a>
+            <a class="btn btn--ghost" href="#how">See how it works</a>
           </div>
 
           <div class="trustline">
-            <div class="stars" aria-label="5 stars">★★★★★</div>
-            <span>Built for online fitness coaches selling £800-£3k programs. Nobody else.</span>
+            <div class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span>Built for coaches selling high-ticket programs (not £29 ebooks).</span>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Stats -->
+    <section class="section" style="padding:32px 0;">
+      <div class="container">
+        <div class="stats">
+          <div class="stat"><div class="stat__num">50+</div><div class="stat__label">Fitness clients served</div></div>
+          <div class="stat"><div class="stat__num">10k+</div><div class="stat__label">DMs automated</div></div>
+          <div class="stat"><div class="stat__num">3x</div><div class="stat__label">Average lead increase</div></div>
+          <div class="stat"><div class="stat__num">70-85%</div><div class="stat__label">Show-up rate</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video -->
+    <section class="video-section">
+      <h2 class="video-heading">See FitPipeline in action</h2>
+      <p class="video-subheading">Watch how we help fitness coaches turn content into booked calls.</p>
+      <div class="container">
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+            title="FitPipeline Overview Video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who this is for -->
     <section id="offer" class="section">
       <div class="container">
         <div class="section__head">
           <h2>Who this is for</h2>
-          <p class="section__lead">If you tick these boxes, we can build your client acquisition infrastructure.</p>
+          <p class="section__lead">We work with online fitness coaches and hybrid PTs selling high-ticket programs (&#163;800-&#163;3,000+).</p>
         </div>
         <div class="grid grid--3">
           <div class="card">
-            <div class="card__title">Online Fitness Coaches</div>
-            <p>You sell £800-£3k high-ticket programs. You want predictable consult flow from Instagram.</p>
+            <div class="card__title">Online Coaches</div>
+            <p>You have a proven offer and paying clients but you are stuck doing everything manually. We install the system so leads come to you.</p>
           </div>
           <div class="card">
-            <div class="card__title">Hybrid PTs Moving Online</div>
-            <p>You have in-person clients and want to scale beyond your local area with a proven system.</p>
+            <div class="card__title">Hybrid PTs</div>
+            <p>Training clients in-person and want to add online revenue? We build the content-to-consult pipeline so you can scale beyond your gym.</p>
           </div>
           <div class="card">
-            <div class="card__title">Proven Offer, Scaling Intent</div>
-            <p>You have some traction, proof, and the ability to close. You're ready for infrastructure.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- What we're NOT section (NEW) -->
-    <section class="section section--alt">
-      <div class="container">
-        <div class="section__head">
-          <h2>What we're NOT</h2>
-          <p class="section__lead">Let's get this clear from the start.</p>
-        </div>
-        <div class="grid grid--2">
-          <div class="card card--soft">
-            <div class="card__title">We are NOT a content agency</div>
-            <p>You create the content. We give you frameworks, strategy, and direction. We're infrastructure, not a factory.</p>
-          </div>
-          <div class="card card--soft">
-            <div class="card__title">We are NOT an SMMA</div>
-            <p>We don't run your ads and disappear. We build the entire client acquisition system and partner with you.</p>
-          </div>
-          <div class="card card--soft">
-            <div class="card__title">We are NOT a lead gen shop</div>
-            <p>We don't sell you leads. We install infrastructure that generates consistent consult volume from your brand.</p>
-          </div>
-          <div class="card card--glow">
-            <div class="card__title">We ARE your client acquisition infrastructure partner</div>
-            <p>We build the system behind predictable client flow. Messaging, content strategy, automation, booking optimisation, sales frameworks.</p>
+            <div class="card__title">Scaling Coaches</div>
+            <p>Already closing but want more volume? We add paid traffic, VSLs, and landing pages on top of your organic system.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- How it works -->
-    <section id="how" class="section">
+    <section id="how" class="section section--alt">
       <div class="container">
         <div class="section__head">
           <h2>How it works</h2>
-          <p class="section__lead">Five pillars. One system. Predictable client flow.</p>
+          <p class="section__lead">We install infrastructure. You create the content. The system does the rest.</p>
         </div>
 
         <div class="grid grid--3">
           <div class="card">
-            <div class="card__title">1) Messaging & Positioning</div>
-            <p>Niche refinement, transformation framing, CTA architecture, bio optimisation, profile positioning.</p>
+            <div class="card__title">1. Audit + positioning</div>
+            <p>We review your profile, offer, and competitors. Then we lock in your messaging, niche positioning, and CTA architecture.</p>
           </div>
           <div class="card">
-            <div class="card__title">2) Content Engine</div>
-            <p>2 branded carousels/week (DFY), 3 reel frameworks/week, weekly blueprint, hook optimisation, comment triggers.</p>
+            <div class="card__title">2. Build the machine</div>
+            <p>DM automation, content direction, booking flow, show-up sequences, and sales call framework - all built and installed for you.</p>
           </div>
           <div class="card">
-            <div class="card__title">3) DM Automation</div>
-            <p>ManyChat build, comment triggers, qualification flow, Loom breakdown integration, tagging, human handover logic.</p>
-          </div>
-          <div class="card">
-            <div class="card__title">4) Booking Optimisation</div>
-            <p>Booking page copy, phone-first structure, pre-call qualification, reminder sequences, DM micro-confirmation.</p>
-          </div>
-          <div class="card">
-            <div class="card__title">5) Sales Framework</div>
-            <p>30-min consult structure, fitness-specific objection handling, offer framing, follow-up scripts, DM guides.</p>
-          </div>
-          <div class="card card--glow">
-            <div class="card__title">The Flow</div>
-            <p><strong>Content → Comment → Qualification → Breakdown → Diagnostic → Conversation</strong></p>
+            <div class="card__title">3. Run the cadence</div>
+            <p>Post, trigger, qualify, book, close. We give you weekly blueprints and iterate based on what is getting replies and bookings.</p>
           </div>
         </div>
 
-        <div class="grid grid--2" style="margin-top:24px;">
+        <div class="grid grid--2" style="margin-top:20px;">
           <div class="card card--soft">
-            <div class="card__title">You create the content (we give you the strategy)</div>
+            <div class="card__title">Content engine (we guide, you create)</div>
             <div class="bullets">
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Weekly content blueprint based on your niche</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Hook frameworks (not full scripts)</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>CTA integration plan</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Format recommendations</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>2 DFY branded carousels delivered weekly</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>2 branded authority carousels per week (DFY)</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>3 reel frameworks per week (structured outlines)</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Weekly content direction blueprint</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Hook optimisation + comment triggers</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Competitor research and swipe file</div>
             </div>
           </div>
 
           <div class="card card--glow">
-            <div class="card__title">We build the infrastructure</div>
+            <div class="card__title">DM automation (ManyChat)</div>
+            <p>We build the full flow: comment triggers, qualification sequence, Loom breakdown integration, tagging, segmentation, and human handover logic.</p>
+            <div class="divider"></div>
             <div class="bullets">
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>ManyChat automation flows</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Booking page + reminder sequences</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Sales call frameworks</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Profile positioning</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Quarterly system audits</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Comment trigger setup</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Qualification + booking flow</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Pre-call reminders (24h/3h)</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Sales call framework + objection handling</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="pricing" class="section section--alt">
+    <!-- Pricing -->
+    <section id="pricing" class="section">
       <div class="container">
         <div class="section__head">
-          <h2>Two infrastructure packages</h2>
-          <p class="section__lead">Organic-only or organic plus paid acceleration. Both include full system build and ongoing optimisation.</p>
+          <h2>Simple pricing</h2>
+          <p class="section__lead">Two tiers. No hidden fees. Setup fee covers the initial build.</p>
         </div>
         <div class="grid grid--2">
           <div class="card">
             <div class="pill">CORE</div>
-            <h3 style="margin-top:14px;font-size:2rem;">£1,000<span style="font-size:1rem;color:var(--muted);font-weight:400;">/month</span></h3>
-            <p style="margin-top:8px;color:var(--muted);">Organic Client System</p>
+            <h3 style="margin-top:14px;font-size:2rem;font-family:var(--font-heading);">&#163;1,000<span style="font-size:1rem;color:var(--muted);font-weight:400;">/month</span></h3>
+            <p style="font-size:0.9rem;color:var(--muted);margin-top:4px;">Setup: &#163;1,500-&#163;2,500 one-time</p>
             <div class="divider"></div>
             <div class="bullets">
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Messaging & Positioning</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Content Engine (2 DFY carousels + frameworks)</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>DM Automation (ManyChat build + flows)</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Booking Optimisation (70-85% show rate target)</div>
-              <div class="bullet"><span class="dot" aria-hidden="true"></span>Sales Framework (consult structure + scripts)</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Messaging + positioning</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Content engine (2 carousels + 3 reel frameworks/wk)</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>ManyChat DM automation</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Booking + show-up optimisation</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Sales call framework</div>
+              <div class="bullet"><span class="dot" aria-hidden="true"></span>Weekly check-ins</div>
             </div>
-            <div class="divider"></div>
-            <p style="font-size:13px;color:var(--muted2);">Setup fee: £1,500-2,500 (one-time)</p>
-            <a class="btn btn--ghost btn--full" href="#cta" style="margin-top:18px;">Book Strategy Call</a>
+            <a class="btn btn--ghost btn--full" href="#cta" style="margin-top:18px;">Get Started</a>
           </div>
           <div class="card card--glow">
             <div class="pill pill--alt">SCALE</div>
-            <h3 style="margin-top:14px;font-size:2rem;">£1,500-2,000<span style="font-size:1rem;color:var(--muted);font-weight:400;">/month</span></h3>
-            <p style="margin-top:8px;color:var(--muted);">Organic + Paid Acceleration</p>
+            <h3 style="margin-top:14px;font-size:2rem;font-family:var(--font-heading);">&#163;1,500-2,000<span style="font-size:1rem;color:var(--muted);font-weight:400;">/month</span></h3>
+            <p style="font-size:0.9rem;color:var(--muted);margin-top:4px;">Setup: &#163;2,500-&#163;4,000 one-time</p>
             <div class="divider"></div>
             <div class="bullets">
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Everything in CORE</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>VSL structure & scripting</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Everything in Core</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Meta ads setup + management</div>
               <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Landing page build</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Meta ads setup & creative guidance</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Retargeting structure & campaign optimisation</div>
-              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Scaling roadmap (ad spend separate)</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>VSL structure + scripting</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Retargeting + scaling roadmap</div>
+              <div class="bullet"><span class="dot dot--alt" aria-hidden="true"></span>Priority support</div>
             </div>
-            <div class="divider"></div>
-            <p style="font-size:13px;color:var(--muted2);">Setup fee: £2,500-4,000 (VSL + LP + ads infrastructure)</p>
-            <a class="btn btn--primary btn--full" href="#cta" style="margin-top:18px;">Book Strategy Call</a>
+            <a class="btn btn--primary btn--full" href="#cta" style="margin-top:18px;">Get Started</a>
           </div>
-        </div>
-        <div style="margin-top:24px;text-align:center;">
-          <p style="color:var(--muted);font-size:14px;">This is serious infrastructure. 3 month minimum commitment recommended for the system to mature.</p>
         </div>
       </div>
     </section>
 
+    <!-- CTA -->
+    <section id="cta" class="section section--alt">
+      <div class="container">
+        <div class="proof__card">
+          <div class="proof__kicker">Ready to build the machine?</div>
+          <div class="proof__line">Book a call and we will map out your fastest route to predictable client flow from Instagram.</div>
+          <a class="btn btn--primary btn--full" href="#" data-calendly-open>Book a Call</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
     <section class="section">
       <div class="container">
         <div class="section__head">
           <h2>Meet the team</h2>
-          <p class="section__lead">We build infrastructure. That's it.</p>
+          <p class="section__lead">We have been in the trenches. Now we build acquisition systems for fitness pros.</p>
         </div>
         <div class="grid grid--2">
-          <div class="card" style="text-align:center;padding:32px;">
-            <div style="width:120px;height:120px;border-radius:999px;background:var(--bg2);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);">B</div>
+          <div class="team-card">
+            <div class="team-avatar">B</div>
             <h3>Ben</h3>
-            <p style="margin-top:6px;">Google Ads specialist. Runs ads for 8+ SaaS brands. Obsessed with predictable systems and ROI.</p>
+            <p>Google Ads and paid acquisition. Runs campaigns for 8+ SaaS brands. Obsessed with ROI.</p>
           </div>
-          <div class="card" style="text-align:center;padding:32px;">
-            <div style="width:120px;height:120px;border-radius:999px;background:var(--bg2);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);">A</div>
+          <div class="team-card">
+            <div class="team-avatar">A</div>
             <h3>Archie</h3>
-            <p style="margin-top:6px;">Instagram growth and DM automation expert. Turns followers into clients with systematic infrastructure.</p>
+            <p>Instagram growth and DM automation. Builds the organic systems that turn followers into booked calls.</p>
           </div>
         </div>
       </div>
@@ -288,59 +755,56 @@
             <span class="chev" aria-hidden="true"></span>
           </button>
           <div class="faq__a">
-            No. You need a clear offer and the willingness to run consults. We build the system that converts your existing audience into consistent consult flow.
+            No. You need a clear offer and a repeatable system. We optimise what you already have and build automation that converts attention into booked calls.
           </div>
 
           <button class="faq__q" aria-expanded="false">
-            <span>What if I already have a content person?</span>
+            <span>What if I hate "salesy" DMs?</span>
             <span class="chev" aria-hidden="true"></span>
           </button>
           <div class="faq__a">
-            Perfect. We layer on top. We're not a content agency. We're infrastructure. We build the automation, booking flows, and sales frameworks that turn content into clients.
+            Good - so do we. The flows are designed to start helpful conversations, qualify people, and guide them to a call. No awkward scripts or pushy tactics.
           </div>
 
           <button class="faq__q" aria-expanded="false">
-            <span>What results can I expect?</span>
+            <span>What is the difference between Core and Scale?</span>
             <span class="chev" aria-hidden="true"></span>
           </button>
           <div class="faq__a">
-            We target 70-85% show rates and consistent consult flow. Results depend on your offer, closing ability, and how well you execute on content. We build the infrastructure. You run the system.
+            Core builds your organic client acquisition system: content, DMs, booking flow, and sales framework. Scale adds paid traffic (Meta ads), VSL, and landing pages so you can increase volume beyond organic reach.
           </div>
 
           <button class="faq__q" aria-expanded="false">
-            <span>What's the commitment?</span>
+            <span>Do you create my content for me?</span>
             <span class="chev" aria-hidden="true"></span>
           </button>
           <div class="faq__a">
-            3 month minimum recommended. This is infrastructure, not a quick fix. The system matures over time as we optimise messaging, automation, and booking flows based on real data.
+            We create your carousels (done-for-you) and give you structured reel frameworks, hooks, and weekly direction. You film and post. We do not run your account or pretend to be you.
           </div>
 
           <button class="faq__q" aria-expanded="false">
-            <span>Do you manage my Instagram for me?</span>
+            <span>How fast can we launch?</span>
             <span class="chev" aria-hidden="true"></span>
           </button>
           <div class="faq__a">
-            No. We build the system. You create content using our frameworks, strategy, and direction. We give you 2 DFY carousels per week and reel outlines. You film and post.
+            The initial build (messaging, automation, assets) typically takes 2-3 weeks. Once installed, you are running the weekly cadence straight away.
+          </div>
+
+          <button class="faq__q" aria-expanded="false">
+            <span>What kind of coaches do you work with?</span>
+            <span class="chev" aria-hidden="true"></span>
+          </button>
+          <div class="faq__a">
+            Online fitness coaches and hybrid PTs selling high-ticket programs (&#163;800-&#163;3,000+). You need a validated offer and some traction. We are not a good fit for beginners with no proof or low-ticket-only coaches.
           </div>
         </div>
 
-        <div class="ctaRow ctaRow--tight">
+        <div class="ctaRow">
           <div class="ctaRow__copy">
-            <div class="ctaRow__title">Want to see if you're a fit?</div>
-            <div class="ctaRow__sub">Book a strategy call and we'll map out your client acquisition infrastructure.</div>
+            <div class="ctaRow__title">Want a free profile + funnel audit?</div>
+            <div class="ctaRow__sub">We will show you exactly what to fix to get more DMs and more bookings.</div>
           </div>
-          <a class="btn btn--primary" href="#cta">Book a Call</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section id="cta" class="section">
-      <div class="container">
-        <div class="proof__card">
-          <div class="proof__kicker">Ready to install the infrastructure?</div>
-          <div class="proof__line">Book a strategy call. We'll audit your current setup and map out your client acquisition system.</div>
-          <a class="btn btn--primary btn--full" href="https://calendly.com/your-link-here/strategy-call" target="_blank">Book a Strategy Call</a>
+          <a class="btn btn--primary" href="#" data-calendly-open>Book a Call</a>
         </div>
       </div>
     </section>
@@ -350,55 +814,96 @@
       <div class="container footer__inner">
         <div class="footer__left">
           <div class="brand brand--footer">
-            <span class="brand__mark" aria-hidden="true" >
+            <span class="brand__mark" aria-hidden="true">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             </span>
             <span class="brand__text">FitPipeline</span>
           </div>
           <div class="footer__meta">
-            <div>© 2026 FitPipeline</div>
-            <div>Built for online fitness coaches. Nobody else.</div>
+            <div>&copy; 2026 FitPipeline</div>
+            <div>Client acquisition infrastructure for fitness coaches.</div>
           </div>
         </div>
 
         <div class="footer__right">
           <a class="footer__link" href="https://www.instagram.com/fitpipeline" target="_blank" rel="noreferrer">Instagram</a>
-          <a class="footer__link" href="#top">Back to top ↑</a>
+          <a class="footer__link" href="#top">Back to top &#8593;</a>
         </div>
       </div>
     </footer>
   </main>
 
   <!-- Mobile Sticky Bottom CTA -->
-  <div class="bottomCta bottomCta--pill" id="bottomCta">
+  <div class="bottomCta" id="bottomCta">
     <div class="bottomCta__pill">
       <div class="bottomCta__copy">
-        <div class="bottomCta__title">Install the infrastructure</div>
+        <div class="bottomCta__title">Ready to build the machine?</div>
       </div>
-      <a class="btn btn--primary btn--small" href="#cta">Book Call</a>
+      <a class="btn btn--primary btn--small" href="#" data-calendly-open>Book Call</a>
     </div>
   </div>
 
-  <!-- Calendly Modal (optional) -->
-  <div class="modal" id="calendlyModal" aria-hidden="true" data-calendly-url="https://calendly.com/your-link-here/strategy-call">
+  <!-- Calendly Modal -->
+  <div class="modal" id="calendlyModal" aria-hidden="true" data-calendly-url="https://calendly.com/your-link-here/intro-call">
     <div class="modal__overlay" data-modal-close></div>
-
     <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="calendlyTitle">
       <div class="modal__header">
         <div class="modal__titleWrap">
-          <div class="modal__kicker">Book a Strategy Call</div>
+          <div class="modal__kicker">Book a Call</div>
           <div class="modal__title" id="calendlyTitle">Pick a time that works for you</div>
         </div>
-
-        <button class="modal__close" type="button" aria-label="Close" data-modal-close>✕</button>
+        <button class="modal__close" type="button" aria-label="Close" data-modal-close>&#10005;</button>
       </div>
-
       <div class="modal__body">
         <div class="calendly-inline-widget" id="calendlyWidget" style="min-width:320px;height:720px;"></div>
       </div>
     </div>
   </div>
 
-  <script src="./script.js"></script>
+  <script>
+    // Mobile nav toggle
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    if (toggle) toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+
+    // FAQ accordions
+    document.querySelectorAll('.faq__q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.faq__q').forEach(b => b.setAttribute('aria-expanded', 'false'));
+        if (!expanded) btn.setAttribute('aria-expanded', 'true');
+      });
+    });
+
+    // Calendly modal
+    const modal = document.getElementById('calendlyModal');
+    const widget = document.getElementById('calendlyWidget');
+    const calUrl = modal?.dataset.calendlyUrl;
+    document.querySelectorAll('[data-calendly-open]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        if (modal && calUrl) {
+          modal.setAttribute('aria-hidden', 'false');
+          if (!widget.querySelector('iframe')) {
+            widget.innerHTML = '<iframe src="' + calUrl + '" style="width:100%;height:100%;border:0;" loading="lazy"></iframe>';
+          }
+        }
+      });
+    });
+    document.querySelectorAll('[data-modal-close]').forEach(el => {
+      el.addEventListener('click', () => modal?.setAttribute('aria-hidden', 'true'));
+    });
+
+    // Show bottom CTA after scroll
+    const bottomCta = document.getElementById('bottomCta');
+    if (bottomCta) {
+      window.addEventListener('scroll', () => {
+        bottomCta.style.display = window.scrollY > 600 ? 'block' : 'none';
+      }, { passive: true });
+    }
+  </script>
 </body>
 </html>
