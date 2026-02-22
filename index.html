@@ -373,8 +373,9 @@
       border-radius: var(--radius-lg);
     }
     .team-avatar {
-      width: 100px;
-      height: 100px;
+      overflow: hidden;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
       background: var(--blue-bg);
       margin: 0 auto 16px;
@@ -385,6 +386,11 @@
       font-size: 1.8rem;
       font-weight: 700;
       color: var(--blue);
+    }
+    .team-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .team-card h3 {
       font-family: var(--font-heading);
@@ -728,12 +734,12 @@
         </div>
         <div class="grid grid--2">
           <div class="team-card">
-            <div class="team-avatar">B</div>
+            <div class="team-avatar"><img src="https://iili.io/qFuy8FV.jpg" alt="Ben"></div>
             <h3>Ben</h3>
             <p>Benjamin has helped scale brands of all sizes, managing over $10M+ in ad spend across eCommerce and SaaS. With a background rooted in performance marketing agencies, he is always testing, learning, and pushing for better results. Outside of work, you will usually find him running, travelling or trying new things.</p>
           </div>
           <div class="team-card">
-            <div class="team-avatar">A</div>
+            <div class="team-avatar"><img src="https://iili.io/qFuyScB.jpg" alt="Archie"></div>
             <h3>Archie</h3>
             <p>Has closed multi-7 figures working with coaches. Coaches he has directly helped have generated over $130 million. Builds the organic systems that turn followers into booked calls.</p>
           </div>
